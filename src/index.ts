@@ -81,38 +81,88 @@ const items: Item[] = [
 //
 
 function createInputRow(item: Item) {
-  return `
+  switch (item.name) {
+    case 'contact':
+      if (item.values && item.type) {
+        return `
+      <tr>
+        <th>
+        ${item.label}
+        </th>
+        <td>
+        ${createMultiTd(item.name, item.type, item.values)}
+        </td>
+      </tr>
+    `;
+      }
+
+    case 'time':
+      if (item.values && item.type) {
+        return `
     <tr>
       <th>
       ${item.label}
       </th>
       <td>
-        <input />
+      ${createMultiTd(item.name, item.type, item.values)}
       </td>
     </tr>
   `;
+      }
+    default:
+      return `
+    <tr>
+      <th>
+      ${item.label}
+      </th>
+      <td>
+        <input type="text" placeholder=${item.placeholder} />
+      </td>
+    </tr>
+  `;
+  }
+}
+
+function createMultiTd(name: string, type: string, values: { value: number; label: string }[]) {
+  return values
+    .map(
+      (value: {
+        value: number;
+        label: string;
+      }) => `<input name=${name} type=${type} value=${value.value}  />
+  ${value.label}`,
+    )
+    .join('');
 }
 
 function createSelectRow(item: Item) {
-  return `
-    <tr>
-      <th>
-      </th>
-      <td>
-        <select>
-        </select>
-      </td>
-    </tr>
-  `;
+  if (item.options) {
+    return `
+  <tr>
+    <th>
+    ${item.label}
+    </th>
+    <td>
+      <select>
+      <option value=${item.options[0].value}>${item.options[0].text}</option>
+      <option value=${item.options[1].value}>${item.options[1].text}</option>
+      <option value=${item.options[2].value}>${item.options[2].text}</option>
+
+      </select>
+    </td>
+  </tr>
+`;
+  }
 }
 
 function createTextAreaRow(item: Item) {
   return `
     <tr>
       <th>
+      ${item.label}
       </th>
       <td>
-        <textarea></textarea>
+        <textarea placeholder=${item.placeholder}></textarea>
       </td>
     </tr>
   `;
